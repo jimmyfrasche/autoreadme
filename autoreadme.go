@@ -168,7 +168,7 @@ func getDoc(dir string) (Doc, error) {
 		Doc:      fmtDoc(docs.Doc),
 		Today:    today(),
 		Bugs:     bugs,
-		Library:  bi.Name == "main",
+		Library:  bi.Name != "main",
 	}, nil
 }
 
