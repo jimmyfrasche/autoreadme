@@ -5,7 +5,7 @@ package main
 
 import "text/template"
 
-var tmplraw = `#{{.Name}} [![GoDoc](https://godoc.org/{{.Import}}?status.png)](https://godoc.org/{{.Import}})
+var tmplraw = `#{{.Name}}{{if .Library}} [![GoDoc](https://godoc.org/{{.Import}}?status.png)](https://godoc.org/{{.Import}}){{end}}
 {{.Synopsis}}
 
 Download:
