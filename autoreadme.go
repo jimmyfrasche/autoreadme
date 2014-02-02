@@ -83,7 +83,7 @@ func importPath(dir string) (string, error) {
 		}
 		//not a relative path, therefore the correct one
 		if len(p) > 0 && p[0] != '.' {
-			return p, nil
+			return filepath.ToSlash(p), nil
 		}
 	}
 	return "", fmt.Errorf("Not in go root or element of $GOPATH: %s", dir)
