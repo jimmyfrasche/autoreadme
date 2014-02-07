@@ -14,6 +14,11 @@ Download:
 ` + "```" + `shell
 go get {{.Import}}
 ` + "```" + `
+{{if .Command}}
+If you do not have the go command on your system, you need to Install Go first:
+- [Binary installers and packages](https://code.google.com/p/go/downloads/list)
+- [Build from source and system requirements](http://golang.org/doc/install)
+{{end}}
 {{if .Library}}
 
 Full documentation at http://godoc.org/{{.Import}}

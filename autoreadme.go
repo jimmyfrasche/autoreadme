@@ -64,7 +64,7 @@ type Doc struct {
 	Name, Import, Synopsis, Doc, Today string
 	RepoPath                           string //Import sans github.com
 	Bugs                               []string
-	Library                            bool
+	Library, Command                   bool
 	Travis                             bool //if a .travis.yml file is statable
 }
 
@@ -178,6 +178,7 @@ func getDoc(dir string) (Doc, error) {
 		RepoPath: repo,
 		Bugs:     bugs,
 		Library:  bi.Name != "main",
+		Command:  bi.Name == "main",
 	}, nil
 }
 

@@ -6,6 +6,11 @@ Download:
 go get github.com/jimmyfrasche/autoreadme
 ```
 
+If you do not have the go command on your system, you need to Install Go first:
+- [Binary installers and packages](https://code.google.com/p/go/downloads/list)
+- [Build from source and system requirements](http://golang.org/doc/install)
+
+
 * * *
 Automatically generate a github README.md for your Go project.
 
