@@ -4,8 +4,9 @@
 //Automatically generate a github README.md for your Go project.
 //
 //autoreadme(1) creates a github-formatted README.md using the same format as godoc(1).
-//It only includes the package summary and generates a URL for godoc.org for the complete
-//documentation. It also includes copy-pastable installation instructions using the go(1) tool.
+//It includes the package summary and generates badges for godoc.org for the complete
+//documentation and for travis-ci, if there's a .travis.yml file in the directory.
+//It also includes copy-pastable installation instructions using the go(1) tool.
 //
 //HEURISTICS
 //
@@ -45,6 +46,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -60,8 +62,10 @@ var (
 
 type Doc struct {
 	Name, Import, Synopsis, Doc, Today string
+	RepoPath                           string //Import sans github.com
 	Bugs                               []string
 	Library                            bool
+	Travis                             bool //if a .travis.yml file is statable
 }
 
 func today() string {
@@ -161,12 +165,17 @@ func getDoc(dir string) (Doc, error) {
 		name = filepath.Base(bi.Dir)
 	}
 
+	//get import path without the github.com/
+	pathelms := strings.Split(ip, "/")[1:]
+	repo := path.Join(pathelms...)
+
 	return Doc{
 		Name:     name,
 		Import:   ip,
 		Synopsis: bi.Doc,
 		Doc:      fmtDoc(docs.Doc),
 		Today:    today(),
+		RepoPath: repo,
 		Bugs:     bugs,
 		Library:  bi.Name != "main",
 	}, nil
@@ -216,6 +225,13 @@ func getFile(dir string) (*os.File, error) {
 		}
 	}
 	return os.Create(nm)
+}
+
+func hasTravisYml(dir string) (stated bool) {
+	if _, err := os.Stat(filepath.Join(dir, ".travis.yml")); err == nil {
+		stated = true
+	}
+	return
 }
 
 func dirs(start string) (ds []string, err error) {
@@ -316,6 +332,8 @@ func main() {
 			warn(dir, err)
 			continue
 		}
+
+		doc.Travis = hasTravisYml(dir)
 
 		f, err := getFile(dir)
 		if err != nil {
