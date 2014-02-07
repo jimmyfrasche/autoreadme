@@ -34,6 +34,31 @@
 //
 //To override both the default template and a local README.md.template
 //	autoreadme -template=path/to/readme.template
+//
+//TEMPLATE VARIABLES
+//
+//If you wish to use your own template, These are the fields available to dot:
+//
+//	Name - The name of your packages.
+//
+//	Doc - The package-level documentation of your package.
+//
+//	Synopsis - The first sentence of .Doc.
+//
+//	Import - The import path of your package.
+//
+//	RepoPath - The import path without the github.com/ prefix.
+//
+//	Bugs - a []string of all bugs as per godoc.
+//
+//	Library - True if not a command.
+//
+//	Command - True if a command.
+//
+//	Today - The current date in YYYY.MM.DD format.
+//
+//	Travis - True if there is a .travis.yml file in the same directory
+//		as your package.
 package main
 
 import (
