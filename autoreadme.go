@@ -164,7 +164,7 @@ func getDoc(dir string) (Doc, error) {
 			return false
 		}
 		nm := fi.Name()
-		for _, f := range bi.GoFiles {
+		for _, f := range append(bi.GoFiles, bi.CgoFiles...) {
 			if nm == f {
 				return true
 			}
