@@ -15,7 +15,7 @@ Download:
 go get {{.Import}}
 ` + "```" + `
 {{if .Command}}
-If you do not have the go command on your system, you need to [Install Go](http://golang.org/doc/install/source) first
+If you do not have the go command on your system, you need to [Install Go](http://golang.org/doc/install) first
 {{end}}
 * * *
 {{.Doc}}
