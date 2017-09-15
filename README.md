@@ -16,7 +16,7 @@ It includes the package summary and generates badges for godoc.org for the compl
 documentation and for travis-ci, if there's a .travis.yml file in the directory.
 It also includes copy-pastable installation instructions using the go(1) tool.
 
-##HEURISTICS
+## HEURISTICS
 autoreadme(1) by default imports the Go code in the current directory, unless a directory is specified.
 
 If the -template argument is not given, it tries to use the README.md.template file in the same
@@ -24,7 +24,7 @@ directory. If no such file exists, the built in template is used. These rules ap
 directory visited when -r is specified to run autoreadme(1) recursively. If a README.md already
 exists, it fails unless -f is specified.
 
-##EXAMPLES
+## EXAMPLES
 To create a README.md for the directory a/b/c
 
 ```
@@ -56,7 +56,7 @@ To override both the default template and a local README.md.template
 autoreadme -template=path/to/readme.template
 ```
 
-##TEMPLATE VARIABLES
+## TEMPLATE VARIABLES
 If you wish to use your own template, These are the fields available to dot:
 
 ```
