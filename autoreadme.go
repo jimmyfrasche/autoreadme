@@ -133,7 +133,7 @@ func fmtDoc(doc string) string {
 			push(ls...)
 			nl()
 		case opHead:
-			push("##")
+			push("## ")
 			push(ls...)
 			nl()
 		case opPre:

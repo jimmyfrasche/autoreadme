@@ -20,7 +20,7 @@ If you do not have the go command on your system, you need to [Install Go](http:
 * * *
 {{.Doc}}
 {{if .Bugs}}
-#Bugs
+# Bugs
 {{range .Bugs}}* {{.}}{{end}}
 {{end}}
 * * *
