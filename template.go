@@ -5,7 +5,7 @@ package main
 
 import "text/template"
 
-var tmplraw = `#{{.Name}}{{/*
+var tmplraw = `# {{.Name}}{{/*
 */}}{{if .Library}} [![GoDoc](https://godoc.org/{{.Import}}?status.svg)](https://godoc.org/{{.Import}}){{end}}{{/*
 */}}{{if .Travis}} [![Build Status](https://travis-ci.org/{{.RepoPath}}.png?branch=master)](https://travis-ci.org/{{.RepoPath}}){{end}}
 {{.Synopsis}}
@@ -20,7 +20,7 @@ If you do not have the go command on your system, you need to [Install Go](http:
 * * *
 {{.Doc}}
 {{if .Bugs}}
-#Bugs
+# Bugs
 {{range .Bugs}}* {{.}}{{end}}
 {{end}}
 * * *
