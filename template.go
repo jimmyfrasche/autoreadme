@@ -6,7 +6,7 @@ package main
 import "text/template"
 
 var tmplraw = `#{{.Name}}{{/*
-*/}}{{if .Library}} [![GoDoc](https://godoc.org/{{.Import}}?status.png)](https://godoc.org/{{.Import}}){{end}}{{/*
+*/}}{{if .Library}} [![GoDoc](https://godoc.org/{{.Import}}?status.svg)](https://godoc.org/{{.Import}}){{end}}{{/*
 */}}{{if .Travis}} [![Build Status](https://travis-ci.org/{{.RepoPath}}.png?branch=master)](https://travis-ci.org/{{.RepoPath}}){{end}}
 {{.Synopsis}}
 
