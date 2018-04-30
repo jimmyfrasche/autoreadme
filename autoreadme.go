@@ -62,10 +62,13 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"go/ast"
 	"go/build"
 	"go/doc"
+	"go/format"
 	"go/parser"
 	"go/token"
 	"io/ioutil"
@@ -91,6 +94,7 @@ type Doc struct {
 	Bugs                               []string
 	Library, Command                   bool
 	Travis                             bool //if a .travis.yml file is statable
+	Example                            map[string]string
 }
 
 func today() string {
@@ -159,17 +163,18 @@ func getDoc(dir string) (Doc, error) {
 		return Doc{}, err
 	}
 
+	goFiles := map[string]struct{}{}
+	for _, fs := range [][]string{bi.GoFiles, bi.CgoFiles, bi.TestGoFiles} {
+		for _, f := range fs {
+			goFiles[f] = struct{}{}
+		}
+	}
 	filter := func(fi os.FileInfo) bool {
 		if fi.IsDir() {
 			return false
 		}
-		nm := fi.Name()
-		for _, f := range append(bi.GoFiles, bi.CgoFiles...) {
-			if nm == f {
-				return true
-			}
-		}
-		return false
+		_, ok := goFiles[fi.Name()]
+		return ok
 	}
 
 	pkgs, err := parser.ParseDir(token.NewFileSet(), bi.Dir, filter, parser.ParseComments)
@@ -183,6 +188,22 @@ func getDoc(dir string) (Doc, error) {
 	bugs := []string{}
 	for _, bug := range docs.Notes["BUG"] {
 		bugs = append(bugs, bug.Body)
+	}
+
+	examples := map[string]string{}
+	{
+		pkgs, err := parser.ParseDir(token.NewFileSet(), bi.Dir, filter, parser.ParseComments)
+		if err != nil {
+			return Doc{}, err
+		}
+		pkg := pkgs[bi.Name]
+		var files []*ast.File
+		for _, f := range pkg.Files {
+			files = append(files, f)
+		}
+		for _, ex := range doc.Examples(files...) {
+			examples[ex.Name] = renderExample(ex)
+		}
 	}
 
 	name := bi.Name
@@ -199,12 +220,25 @@ func getDoc(dir string) (Doc, error) {
 		Import:   ip,
 		Synopsis: bi.Doc,
 		Doc:      fmtDoc(docs.Doc),
+		Example:  examples,
 		Today:    today(),
 		RepoPath: repo,
 		Bugs:     bugs,
 		Library:  bi.Name != "main",
 		Command:  bi.Name == "main",
 	}, nil
+}
+
+func renderExample(ex *doc.Example) string {
+	c := &bytes.Buffer{}
+	_ = format.Node(c, token.NewFileSet(), ex.Code)
+	return fmt.Sprintf(
+		"### %s\n\n%s\nCode:\n\n```\n%s\n```\n\nOutput:\n\n```\n%s\n```\n",
+		ex.Name,
+		fmtDoc(ex.Doc),
+		c.String(),
+		ex.Output,
+	)
 }
 
 //only read and parse specified template once if -template and -r specified
