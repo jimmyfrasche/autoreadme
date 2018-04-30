@@ -223,7 +223,7 @@ func renderExamples(bi *build.Package) (map[string]string, error) {
 			return false
 		}
 		nm := fi.Name()
-		for _, f := range append(bi.TestGoFiles, bi.XTestGoFiles...) {
+		for _, f := range bi.XTestGoFiles {
 			if nm == f {
 				return true
 			}
@@ -234,10 +234,11 @@ func renderExamples(bi *build.Package) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	pkg := pkgs[bi.Name]
 	var files []*ast.File
-	for _, f := range pkg.Files {
-		files = append(files, f)
+	for _, pkg := range pkgs {
+		for _, f := range pkg.Files {
+			files = append(files, f)
+		}
 	}
 
 	examples := map[string]string{}
