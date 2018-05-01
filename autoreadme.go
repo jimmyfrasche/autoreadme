@@ -65,7 +65,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"go/ast"
 	"go/build"
 	"go/doc"
 	"go/format"
@@ -218,32 +217,19 @@ func getDoc(dir string) (Doc, error) {
 }
 
 func renderExamples(bi *build.Package) (map[string]string, error) {
-	filter := func(fi os.FileInfo) bool {
-		if fi.IsDir() {
-			return false
-		}
-		nm := fi.Name()
-		for _, f := range bi.XTestGoFiles {
-			if nm == f {
-				return true
-			}
-		}
-		return false
-	}
-	pkgs, err := parser.ParseDir(token.NewFileSet(), bi.Dir, filter, parser.ParseComments)
-	if err != nil {
-		return nil, err
-	}
-	var files []*ast.File
-	for _, pkg := range pkgs {
-		for _, f := range pkg.Files {
-			files = append(files, f)
-		}
-	}
+	testFilenames := append(bi.TestGoFiles, bi.XTestGoFiles...)
 
 	examples := map[string]string{}
-	for _, ex := range doc.Examples(files...) {
-		examples[ex.Name] = renderExample(ex)
+	fset := token.NewFileSet()
+	for _, filename := range testFilenames {
+		path := filepath.Join(bi.Dir, filename)
+		file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
+		if err != nil {
+			return nil, err
+		}
+		for _, ex := range doc.Examples(file) {
+			examples[ex.Name] = renderExample(ex)
+		}
 	}
 	return examples, nil
 }
