@@ -93,7 +93,12 @@ type Doc struct {
 	Bugs                               []string
 	Library, Command                   bool
 	Travis                             bool //if a .travis.yml file is statable
-	Example                            map[string]string
+	Example                            map[string]Example
+}
+
+type Example struct {
+	Name string
+	Code string //code block and, if not empty, the expected output
 }
 
 func today() string {
@@ -216,10 +221,9 @@ func getDoc(dir string) (Doc, error) {
 	}, nil
 }
 
-func renderExamples(bi *build.Package) (map[string]string, error) {
+func renderExamples(bi *build.Package) (map[string]Example, error) {
+	examples := map[string]Example{}
 	testFilenames := append(bi.TestGoFiles, bi.XTestGoFiles...)
-
-	examples := map[string]string{}
 	fset := token.NewFileSet()
 	for _, filename := range testFilenames {
 		path := filepath.Join(bi.Dir, filename)
@@ -234,7 +238,7 @@ func renderExamples(bi *build.Package) (map[string]string, error) {
 	return examples, nil
 }
 
-func renderExample(ex *doc.Example) string {
+func renderExample(ex *doc.Example) Example {
 	c := &bytes.Buffer{}
 	_ = format.Node(c, token.NewFileSet(), ex.Code)
 	md := fmt.Sprintf(
@@ -247,7 +251,10 @@ func renderExample(ex *doc.Example) string {
 			ex.Output,
 		)
 	}
-	return md
+	return Example{
+		Name: strings.Replace(ex.Name, "_", " ", -1),
+		Code: md,
+	}
 }
 
 //only read and parse specified template once if -template and -r specified
