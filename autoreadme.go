@@ -59,6 +59,14 @@
 //
 //	Travis - True if there is a .travis.yml file in the same directory
 //		as your package.
+//
+//	Example - a map[name]Example with all examples from the _test files. These
+//		can be used to include selective examples into the README.
+//		The Example{} struct has these fields:
+//			Name - name of the test
+//			Code - renders examples similar to godoc, including the output, if
+//				any.
+//
 package main
 
 import (
