@@ -63,9 +63,9 @@
 //	Example - a map[name]Example with all examples from the _test files. These
 //		can be used to include selective examples into the README.
 //		The Example{} struct has these fields:
-//			Name - name of the test
-//			Code - renders examples similar to godoc, including the output, if
-//				any.
+//			Name - name of the example
+//			Code - renders example code similar to godoc
+//			Output - example output, if any
 //
 package main
 
@@ -105,8 +105,9 @@ type Doc struct {
 }
 
 type Example struct {
-	Name string
-	Code string //code block and, if not empty, the expected output
+	Name   string
+	Code   string
+	Output string //the expected output, if not empty
 }
 
 func today() string {
@@ -247,22 +248,19 @@ func renderExamples(bi *build.Package) (map[string]Example, error) {
 }
 
 func renderExample(ex *doc.Example) Example {
-	c := &bytes.Buffer{}
-	_ = format.Node(c, token.NewFileSet(), ex.Code)
-	md := fmt.Sprintf(
-		"%s\nCode:\n\n```\n%s\n```\n",
-		ex.Doc,
-		c.String(),
-	)
-	if ex.Output != "" {
-		md += fmt.Sprintf("\nOutput:\n\n```\n%s\n```\n",
-			ex.Output,
-		)
-	}
-	return Example{
+	e := Example{
 		Name: strings.Replace(ex.Name, "_", " ", -1),
-		Code: md,
 	}
+
+	c := &bytes.Buffer{}
+	format.Node(c, token.NewFileSet(), ex.Code)
+	e.Code = fmt.Sprintf("Code:\n\n```\n%s\n```\n", c.String())
+
+	if ex.Output != "" {
+		e.Output = fmt.Sprintf("Output:\n\n```\n%s\n```\n", ex.Output)
+	}
+
+	return e
 }
 
 //only read and parse specified template once if -template and -r specified
