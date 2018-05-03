@@ -59,13 +59,23 @@
 //
 //	Travis - True if there is a .travis.yml file in the same directory
 //		as your package.
+//
+//	Example - a map[name]Example with all examples from the _test files. These
+//		can be used to include selective examples into the README.
+//		The Example{} struct has these fields:
+//			Name - name of the example
+//			Code - renders example code similar to godoc
+//			Output - example output, if any
+//
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"go/build"
 	"go/doc"
+	"go/format"
 	"go/parser"
 	"go/token"
 	"io/ioutil"
@@ -91,6 +101,13 @@ type Doc struct {
 	Bugs                               []string
 	Library, Command                   bool
 	Travis                             bool //if a .travis.yml file is statable
+	Example                            map[string]Example
+}
+
+type Example struct {
+	Name   string
+	Code   string
+	Output string //the expected output, if not empty
 }
 
 func today() string {
@@ -180,6 +197,11 @@ func getDoc(dir string) (Doc, error) {
 	pkg := pkgs[bi.Name]
 	docs := doc.New(pkg, bi.ImportPath, 0)
 
+	examples, err := renderExamples(bi)
+	if err != nil {
+		return Doc{}, err
+	}
+
 	bugs := []string{}
 	for _, bug := range docs.Notes["BUG"] {
 		bugs = append(bugs, bug.Body)
@@ -199,12 +221,46 @@ func getDoc(dir string) (Doc, error) {
 		Import:   ip,
 		Synopsis: bi.Doc,
 		Doc:      fmtDoc(docs.Doc),
+		Example:  examples,
 		Today:    today(),
 		RepoPath: repo,
 		Bugs:     bugs,
 		Library:  bi.Name != "main",
 		Command:  bi.Name == "main",
 	}, nil
+}
+
+func renderExamples(bi *build.Package) (map[string]Example, error) {
+	examples := map[string]Example{}
+	testFilenames := append(bi.TestGoFiles, bi.XTestGoFiles...)
+	fset := token.NewFileSet()
+	for _, filename := range testFilenames {
+		path := filepath.Join(bi.Dir, filename)
+		file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
+		if err != nil {
+			return nil, err
+		}
+		for _, ex := range doc.Examples(file) {
+			examples[ex.Name] = renderExample(ex)
+		}
+	}
+	return examples, nil
+}
+
+func renderExample(ex *doc.Example) Example {
+	e := Example{
+		Name: strings.Replace(ex.Name, "_", " ", -1),
+	}
+
+	c := &bytes.Buffer{}
+	format.Node(c, token.NewFileSet(), ex.Code)
+	e.Code = fmt.Sprintf("Code:\n\n```\n%s\n```\n", c.String())
+
+	if ex.Output != "" {
+		e.Output = fmt.Sprintf("Output:\n\n```\n%s\n```\n", ex.Output)
+	}
+
+	return e
 }
 
 //only read and parse specified template once if -template and -r specified
