@@ -243,7 +243,7 @@ func renderExample(ex *doc.Example) Example {
 	_ = format.Node(c, token.NewFileSet(), ex.Code)
 	md := fmt.Sprintf(
 		"%s\nCode:\n\n```\n%s\n```\n",
-		fmtDoc(ex.Doc),
+		ex.Doc,
 		c.String(),
 	)
 	if ex.Output != "" {
