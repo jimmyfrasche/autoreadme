@@ -93,6 +93,7 @@ var (
 	Recursive     = flag.Bool("r", false, "Run in all subdirectories containing Go code")
 	PrintTemplate = flag.Bool("print-template", false, "write the built in template to stdout and exit")
 	Template      = flag.String("template", "", "specify a file to use as template, overrides built in template and README.md.template")
+	Defs          defFlag
 )
 
 type Doc struct {
@@ -102,6 +103,23 @@ type Doc struct {
 	Library, Command                   bool
 	Travis                             bool //if a .travis.yml file is statable
 	Example                            map[string]Example
+}
+
+// Map returns the receiver as a map.
+func (d Doc) Map() map[string]interface{} {
+	return map[string]interface{}{
+		"Name":     d.Name,
+		"Import":   d.Import,
+		"Synopsis": d.Synopsis,
+		"Doc":      d.Doc,
+		"Today":    d.Today,
+		"RepoPath": d.RepoPath,
+		"Bugs":     d.Bugs,
+		"Library":  d.Library,
+		"Command":  d.Command,
+		"Travis":   d.Travis,
+		"Example":  d.Example,
+	}
 }
 
 type Example struct {
@@ -367,6 +385,7 @@ func init() {
 
 //Usage: %name %flags [directory]
 func main() {
+	flag.Var(&Defs, "def", "Template define having the form: name=value")
 	flag.Parse()
 
 	where := "."
@@ -423,7 +442,17 @@ func main() {
 			continue
 		}
 
-		if err = tmpl.Execute(f, doc); err != nil {
+		// Convert the doc to a map, so we can add additional fields
+		docm := doc.Map()
+		for _, d := range Defs {
+			// Lowercase define
+			docm[d.Name] = d.Value
+			// Uppercase define
+			d = d.UpperClone()
+			docm[d.Name] = d.Value
+		}
+
+		if err = tmpl.Execute(f, docm); err != nil {
 			warn(dir, err)
 		}
 	}
