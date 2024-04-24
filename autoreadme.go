@@ -2,15 +2,18 @@ package main
 
 import (
 	"bytes"
+	"cmp"
 	"context"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 )
 
 var PrintTemplate = flag.Bool("print-template", false, "write the built in template to stdout and exit")
+var Version = flag.Bool("version", false, "output version information")
 
 func main() {
 	log.SetFlags(0)
@@ -22,6 +25,20 @@ func main() {
 
 	if *PrintTemplate {
 		fmt.Println(defaultTemplateSrc)
+		return
+	}
+	if *Version {
+		info, ok := debug.ReadBuildInfo()
+		if !ok {
+			fmt.Println("no version information in build")
+			return
+		}
+		m := info.Main
+		sum := ""
+		if m.Sum != "" {
+			sum = fmt.Sprintf(" (%s)", m.Sum)
+		}
+		fmt.Printf("%s%s, built with %s\n", cmp.Or(m.Version, "unknown version"), sum, info.GoVersion)
 		return
 	}
 
