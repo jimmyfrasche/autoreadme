@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"go/doc"
 	"go/token"
+	"path/filepath"
+	"regexp"
 )
 
 type Package struct {
@@ -40,9 +42,20 @@ func examplesFrom(buf *bytes.Buffer, fset *token.FileSet, in []*doc.Example) map
 	return m
 }
 
+var versionRE = regexp.MustCompile("^v[0-9]+$")
+
 func PackageFromInfo(fset *token.FileSet, p *info) *Package {
 	Name := p.pkg.Name
 	Command := Name == "main"
+
+	// Compute the name that go build would use for the binary
+	if Command {
+		dir, file := filepath.Split(p.dir)
+		if versionRE.MatchString(file) {
+			file = filepath.Base(dir)
+		}
+		Name = file
+	}
 
 	Doc := &Doc{
 		Synopsis: Synopsis(p.doc.Doc),
