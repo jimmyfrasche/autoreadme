@@ -36,9 +36,7 @@ func (d *Doc) Markdown(headingLevel int) string {
 }
 
 func renderExample(buf *bytes.Buffer, fset *token.FileSet, in *doc.Example) Example {
-	out := Example{
-		Name: in.Name,
-	}
+	out := Example{}
 
 	buf.Reset()
 	buf.WriteString("```\n")

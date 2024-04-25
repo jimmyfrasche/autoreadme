@@ -26,7 +26,6 @@ type Note struct {
 }
 
 type Example struct {
-	Name   string
 	Code   string
 	Output string
 }
