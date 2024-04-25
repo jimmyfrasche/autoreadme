@@ -11,7 +11,7 @@ import (
 type Package struct {
 	Name             string
 	Import           string
-	Doc              *Doc
+	Documentation    *Doc
 	Data             any
 	Library          bool
 	Command          bool
@@ -81,7 +81,7 @@ func PackageFromInfo(fset *token.FileSet, p *info) *Package {
 	return &Package{
 		Name:             Name,
 		Import:           p.pkg.PkgPath,
-		Doc:              Doc,
+		Documentation:    Doc,
 		Data:             p.data,
 		Library:          !Command,
 		Command:          Command,
