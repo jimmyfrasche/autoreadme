@@ -35,19 +35,19 @@ func (d *Doc) Markdown(headingLevel int) string {
 	return string(p.Markdown(d.Doc))
 }
 
-func renderExample(buf *bytes.Buffer, fset *token.FileSet, ex *doc.Example) Example {
-	e := Example{
-		Name: ex.Name,
+func renderExample(buf *bytes.Buffer, fset *token.FileSet, in *doc.Example) Example {
+	out := Example{
+		Name: in.Name,
 	}
 
 	buf.Reset()
 	buf.WriteString("```\n")
-	format.Node(buf, fset, ex.Code)
+	format.Node(buf, fset, in.Code)
 	buf.WriteString("\n```\n")
-	e.Code = buf.String()
+	out.Code = buf.String()
 
-	if ex.Output != "" {
-		e.Output = "```\n" + ex.Output + "\n```\n"
+	if in.Output != "" {
+		out.Output = "```\n" + in.Output + "\n```\n"
 	}
-	return e
+	return out
 }
