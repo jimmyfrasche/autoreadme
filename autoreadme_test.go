@@ -116,7 +116,7 @@ func TestAutoreadme(t *testing.T) {
 				}
 				contents := string(bs)
 				path = filepath.Dir(path)
-				if name == "README.md" {
+				if name == "README.md.expect" {
 					expect[path] = contents
 				} else {
 					got[path] = contents
