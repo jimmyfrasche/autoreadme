@@ -1,0 +1,44 @@
+-- go.mod --
+module example
+-- x.go --
+// Ax.
+// Bx.
+package example
+-- README.md.expect --
+PROJECT ROOT
+yes
+REPOSITORY
+-DATA
+<no value>
+MODULE
+-PATH
+example
+-VERSION
+
+-DEPRECATED
+
+-GOVERSION
+
+-TOOLCHAIN
+
+-DOCUMENTATION
+
+~
+
+PACKAGE
+-NAME
+example
+-IMPORT
+example
+-DATA
+<no value>
+-LIBRARY
+yes
+-EXAMPLE
+
+-EXTERNAL EXAMPLE
+
+-DOCUMENTATION
+Ax.
+~
+Ax. Bx.

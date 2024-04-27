@@ -1,0 +1,49 @@
+PROJECT ROOT
+{{ if .ProjectRoot }}yes{{ else }}no{{ end }}
+REPOSITORY
+-DATA
+{{ .Repository.Data }}
+MODULE
+-PATH
+{{ .Module.Path }}
+-VERSION
+{{ .Module.Version }}
+-DEPRECATED
+{{ .Module.Deprecated }}
+-GOVERSION
+{{ .Module.GoVersion }}
+-TOOLCHAIN
+{{ .Module.Toolchain }}
+-DOCUMENTATION
+{{ .Module.Documentation.Synopsis }}
+~
+{{ .Module.Documentation.Markdown 1 }}
+PACKAGE
+-NAME
+{{ .Package.Name }}
+-IMPORT
+{{ .Package.Import }}
+-DATA
+{{ .Package.Data }}
+-LIBRARY
+{{ if .Package.Library }}yes{{ else }}no{{ end }}
+-EXAMPLE
+{{ range $n, $x := .Package.Examples -}}
+{{ $n }}
+code
+{{ $x.Code }}
+output
+{{ $x.Output }}
+{{- end }}
+-EXTERNAL EXAMPLE
+{{ range $n, $x := .Package.ExternalExamples -}}
+{{ $n }}
+code
+{{ $x.Code }}
+output
+{{ $x.Output }}
+{{- end }}
+-DOCUMENTATION
+{{ .Package.Documentation.Synopsis }}
+~
+{{ .Package.Documentation.Markdown 1 }}
