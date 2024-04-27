@@ -33,6 +33,7 @@ func cd(t *testing.T, path ...string) {
 	}
 }
 
+// See testdata/README.md for instructions on how to add additional test cases.
 func TestAutoreadme(t *testing.T) {
 	// cd back to the original directory when we're done
 	originalDir, err := os.Getwd()
