@@ -47,7 +47,8 @@ func Roots() (repo, project string, err error) {
 			fi, err := stat(dir, ".git")
 			if err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return err
-			} else if fi.IsDir() {
+			}
+			if err == nil && fi.IsDir() {
 				repo = dir
 			}
 		}
@@ -56,7 +57,8 @@ func Roots() (repo, project string, err error) {
 			fi, err := stat(dir, "go.mod")
 			if err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return err
-			} else if fi.Mode().IsRegular() {
+			}
+			if err == nil && fi.Mode().IsRegular() {
 				project = dir
 			}
 		}
