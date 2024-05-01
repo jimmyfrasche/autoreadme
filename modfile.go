@@ -39,6 +39,7 @@ func ModInfo(projectRoot string) (*Module, error) {
 		GoVersion = f.Go.Version
 	}
 
+	// BUG(jmf): Currently this is not set by ParseLax, see https://github.com/golang/go/issues/67132
 	Toolchain := ""
 	if f.Toolchain != nil {
 		Toolchain = f.Toolchain.Name
