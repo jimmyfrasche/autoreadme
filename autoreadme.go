@@ -159,7 +159,7 @@ func Main(ctx context.Context) error {
 		if !bytes.Equal(contents, info.oldReadme) {
 			files = append(files, file{
 				path:     filepath.Join(info.dir, "README.md"),
-				contents: contents,
+				contents: bytes.Clone(contents),
 			})
 		}
 	}
