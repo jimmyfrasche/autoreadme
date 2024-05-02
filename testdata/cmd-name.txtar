@@ -1,0 +1,8 @@
+-- .github/autoreadme/README.md.template --
+{{ .Package.Name }}
+-- go.mod --
+module example
+-- name/x.go --
+package main
+-- name/README.md.expect --
+name
