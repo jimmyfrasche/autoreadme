@@ -1,0 +1,12 @@
+-- .github/autoreadme/README.md.template --
+{{ range $kind, $notes := .Package.Notes -}}
+	{{- $kind }}{{ range $notes }}({{ .UID }}): {{ .Body }}{{ end }}
+{{- end -}}
+-- go.mod --
+module example
+-- x.go --
+package example
+
+// BUG(tst): ough
+-- README.md.expect --
+BUG(tst): ough
