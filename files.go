@@ -22,7 +22,11 @@ func repoPath(repo, file string) string {
 }
 
 func localPath(dir, ext string) string {
-	return filepath.Join(dir, "README.md."+ext)
+	var dot string
+	if ext != "" {
+		dot = "."
+	}
+	return filepath.Join(dir, "README.md"+dot+ext)
 }
 
 func toJson(bs []byte, err error) (any, error) {
