@@ -39,13 +39,13 @@ func renderExample(buf *bytes.Buffer, fset *token.FileSet, in *doc.Example) Exam
 	out := Example{}
 
 	buf.Reset()
+	buf.WriteString("```go\n")
+	format.Node(buf, fset, in.Play)
 	buf.WriteString("```\n")
-	format.Node(buf, fset, in.Code)
-	buf.WriteString("\n```\n")
 	out.Code = buf.String()
 
 	if in.Output != "" {
-		out.Output = "```\n" + in.Output + "\n```\n"
+		out.Output = "```\n" + in.Output + "```\n"
 	}
 	return out
 }
