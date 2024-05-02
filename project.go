@@ -63,8 +63,9 @@ func CollectProjectErrors(in map[string]*info) []error {
 	for k, p := range in {
 		if p.pkg == nil {
 			acc = append(acc, fmt.Errorf("%s only has external test files, cannot process", k))
+		} else {
+			extend(p.pkg.Errors)
 		}
-		extend(p.pkg.Errors)
 		if p.test != nil {
 			extend(p.test.Errors)
 		}
