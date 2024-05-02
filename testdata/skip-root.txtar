@@ -1,0 +1,50 @@
+-- .github/autoreadme/autoreadme.ignore --
+example
+-- go.mod --
+module example
+-- x.go --
+// Ax.
+// Bx.
+package example
+-- x/x.go --
+// Cx.
+// Dx.
+package x
+-- x/README.md.expect --
+PROJECT ROOT
+no
+REPOSITORY
+-DATA
+<no value>
+MODULE
+-PATH
+example
+-VERSION
+
+-DEPRECATED
+
+-GOVERSION
+
+-TOOLCHAIN
+
+-DOCUMENTATION
+
+~
+
+PACKAGE
+-NAME
+x
+-IMPORT
+example/x
+-DATA
+<no value>
+-LIBRARY
+yes
+-EXAMPLE
+
+-EXTERNAL EXAMPLE
+
+-DOCUMENTATION
+Cx.
+~
+Cx. Dx.
