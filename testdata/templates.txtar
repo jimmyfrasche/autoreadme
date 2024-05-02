@@ -1,0 +1,18 @@
+-- .github/autoreadme/README.md.template --
+repo
+-- go.mod --
+module example
+-- x.go --
+// Ax.
+// Bx.
+package example
+-- README.md.template --
+package
+-- README.md.expect --
+package
+-- x/x.go --
+// Cx.
+// Dx.
+package x
+-- x/README.md.expect --
+repo
