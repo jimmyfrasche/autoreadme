@@ -26,8 +26,9 @@ type Note struct {
 }
 
 type Example struct {
-	Code   string
-	Output string
+	Code     string
+	Output   string
+	Playable bool
 }
 
 func examplesFrom(buf *bytes.Buffer, fset *token.FileSet, in []*doc.Example) map[string]Example {
@@ -74,8 +75,8 @@ func PackageFromInfo(fset *token.FileSet, p *info) *Package {
 	}
 
 	var buf bytes.Buffer
-	Examples := examplesFrom(&buf, fset, p.doc.Examples)
-	ExternalExamples := examplesFrom(&buf, fset, p.examples)
+	Examples := examplesFrom(&buf, fset, p.examples)
+	ExternalExamples := examplesFrom(&buf, fset, p.externalExamples)
 
 	return &Package{
 		Name:             Name,

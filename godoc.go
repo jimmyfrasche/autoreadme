@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"go/ast"
 	"go/doc"
 	"go/doc/comment"
 	"go/format"
@@ -36,11 +37,28 @@ func (d *Doc) Markdown(headingLevel int) string {
 }
 
 func renderExample(buf *bytes.Buffer, fset *token.FileSet, in *doc.Example) Example {
-	out := Example{}
+	out := Example{
+		Playable: in.Play != nil,
+	}
+
+	code := []any{in.Play}
+	if !out.Playable {
+		code = []any{}
+		for _, line := range in.Code.(*ast.BlockStmt).List {
+			code = append(code, line)
+		}
+	}
 
 	buf.Reset()
 	buf.WriteString("```go\n")
-	format.Node(buf, fset, in.Play)
+	for _, line := range code {
+		format.Node(buf, fset, line)
+
+		// playable examples end with a newline already
+		if !out.Playable {
+			buf.WriteString("\n")
+		}
+	}
 	buf.WriteString("```\n")
 	out.Code = buf.String()
 

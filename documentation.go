@@ -67,6 +67,7 @@
 //
 //	.Code - markdown formatted code
 //	.Output - the expected output, if specified
+//	.Playable - if the example is self-contained
 //
 // Note entries collect the "MARKER(uid): body" notes from the package (per go/doc)
 //

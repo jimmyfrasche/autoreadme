@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"go/ast"
 	"go/doc"
 	"go/token"
 	"path"
@@ -26,13 +27,14 @@ func Packages(ctx context.Context, project string) (*token.FileSet, []*packages.
 }
 
 type info struct {
-	pkg, test *packages.Package
-	doc       *doc.Package
-	examples  []*doc.Example
-	dir       string
-	data      any
-	oldReadme []byte
-	template  *template.Template
+	pkg, test        *packages.Package
+	doc              *doc.Package
+	examples         []*doc.Example
+	externalExamples []*doc.Example
+	dir              string
+	data             any
+	oldReadme        []byte
+	template         *template.Template
 }
 
 func PairPackagesWithXTests(in []*packages.Package) map[string]*info {
@@ -82,14 +84,26 @@ func CollectProjectErrors(in map[string]*info) []error {
 }
 
 func ProcessPackageDir(fset *token.FileSet, p *info, defaultTemplate *template.Template) error {
+	var goFiles, testFiles []*ast.File
+	for _, v := range p.pkg.Syntax {
+		if strings.HasSuffix(fset.Position(v.FileStart).Filename, "_test.go") {
+			testFiles = append(testFiles, v)
+		} else {
+			goFiles = append(goFiles, v)
+		}
+	}
 	var err error
-	p.doc, err = doc.NewFromFiles(fset, p.pkg.Syntax, p.pkg.PkgPath, doc.PreserveAST)
+	p.doc, err = doc.NewFromFiles(fset, goFiles, p.pkg.PkgPath, doc.PreserveAST)
 	if err != nil {
 		return err
 	}
 
+	if len(testFiles) > 0 {
+		p.examples = doc.Examples(testFiles...)
+	}
+
 	if p.test != nil {
-		p.examples = doc.Examples(p.test.Syntax...)
+		p.externalExamples = doc.Examples(p.test.Syntax...)
 	}
 	// One day there may be a p.pkg.Dir but alas not today
 	p.dir = filepath.FromSlash(path.Dir(p.pkg.GoFiles[0]))
