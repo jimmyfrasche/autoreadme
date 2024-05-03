@@ -53,9 +53,13 @@ func (ns Notes) UID(uid string) Notes {
 }
 
 type Example struct {
-	Code     string
-	Output   string
-	Playable bool
+	Name        string
+	Doc         *Doc
+	Code        string
+	Output      string
+	Playable    bool
+	Unordered   bool
+	EmptyOutput bool
 }
 
 func examplesFrom(buf *bytes.Buffer, fset *token.FileSet, in []*doc.Example) map[string]Example {

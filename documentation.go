@@ -65,9 +65,13 @@
 //
 // Example entries contain
 //
+//	.Name - func Name without Example prefix
+//	.Doc - Doc entry for the example func
 //	.Code - markdown formatted code
 //	.Output - the expected output, if specified
 //	.Playable - if the example is self-contained
+//	.Unordered - if the output is unordered
+//	.EmptyOutput - if the expected result is no output
 //
 // Note entries collect the "KIND(uid): body" notes from the package (per go/doc)
 //

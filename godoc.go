@@ -45,7 +45,11 @@ func (d *Doc) Markdown(headingLevel int) string {
 
 func renderExample(buf *bytes.Buffer, fset *token.FileSet, in *doc.Example) Example {
 	out := Example{
-		Playable: in.Play != nil,
+		Name:        in.Name,
+		Doc:         NewDoc(in.Doc),
+		Playable:    in.Play != nil,
+		Unordered:   in.Unordered,
+		EmptyOutput: in.EmptyOutput,
 	}
 
 	code := []any{in.Play}
