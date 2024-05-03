@@ -1,0 +1,104 @@
+-- .github/autoreadme/README.md.data --
+"string!"
+-- go.mod --
+// Ax.
+// Bx.
+//
+// Deprecated: middle
+//
+//
+// Cx.
+module example/v2
+
+go 1.21.0
+
+toolchain go1.22
+-- x.go --
+// Ax.
+// Bx.
+package example
+-- x_test.go --
+package example
+import "fmt"
+func Example_Check() {
+	fmt.Println("foo!")
+	// Output: foo!
+}
+-- external_test.go --
+package example_test
+import "fmt"
+func Example_Ext() {
+	fmt.Println("bar?")
+	// Output: bar?
+}
+-- README.md.data --
+42
+-- README.md.expect --
+PROJECT ROOT
+yes
+REPOSITORY
+-DATA
+string!
+MODULE
+-PATH
+example/v2
+-VERSION
+
+-DEPRECATED
+middle
+-GOVERSION
+1.21.0
+-TOOLCHAIN
+
+-DOCUMENTATION
+Ax.
+~
+Ax. Bx.
+
+Cx.
+
+PACKAGE
+-NAME
+example
+-IMPORT
+example/v2
+-DATA
+42
+-LIBRARY
+yes
+-EXAMPLE
+_Check
+code
+```go
+fmt.Println("foo!")
+```
+
+output
+```
+foo!
+```
+
+-EXTERNAL EXAMPLE
+_Ext
+code
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println("bar?")
+}
+```
+
+output
+```
+bar?
+```
+
+-DOCUMENTATION
+Ax.
+~
+Ax. Bx.
