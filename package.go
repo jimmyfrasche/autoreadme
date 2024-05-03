@@ -2,10 +2,13 @@ package main
 
 import (
 	"bytes"
+	"cmp"
 	"go/doc"
 	"go/token"
 	"path/filepath"
 	"regexp"
+	"slices"
+	"strings"
 )
 
 type Package struct {
@@ -15,14 +18,38 @@ type Package struct {
 	Data             any
 	Library          bool
 	Command          bool
-	Notes            map[string][]Note
+	Notes            Notes
 	Examples         map[string]Example
 	ExternalExamples map[string]Example
 }
 
 type Note struct {
+	p    *token.Position
+	Kind string
 	UID  string
 	Body string
+}
+
+type Notes []Note
+
+func (ns Notes) Kind(k string) Notes {
+	var out Notes
+	for _, n := range ns {
+		if strings.EqualFold(k, n.Kind) {
+			out = append(out, n)
+		}
+	}
+	return out
+}
+
+func (ns Notes) UID(uid string) Notes {
+	var out Notes
+	for _, n := range ns {
+		if strings.EqualFold(uid, n.UID) {
+			out = append(out, n)
+		}
+	}
+	return out
 }
 
 type Example struct {
@@ -62,17 +89,26 @@ func PackageFromInfo(fset *token.FileSet, p *info) *Package {
 		Doc:      ParseDoc(p.doc.Doc),
 	}
 
-	Notes := make(map[string][]Note, len(p.doc.Notes))
+	var Notes Notes
 	for k, ns := range p.doc.Notes {
-		acc := make([]Note, 0, len(ns))
 		for _, n := range ns {
-			acc = append(acc, Note{
+			p := fset.Position(n.Pos)
+			Notes = append(Notes, Note{
+				p:    &p,
+				Kind: k,
 				UID:  n.UID,
 				Body: n.Body,
 			})
 		}
-		Notes[k] = acc
 	}
+	slices.SortFunc(Notes, func(a, b Note) int {
+		return cmp.Or(
+			strings.Compare(a.Kind, b.Kind),
+			strings.Compare(a.UID, b.UID),
+			strings.Compare(a.p.Filename, b.p.Filename),
+			cmp.Compare(a.p.Line, b.p.Line),
+		)
+	})
 
 	var buf bytes.Buffer
 	Examples := examplesFrom(&buf, fset, p.examples)

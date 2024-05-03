@@ -41,7 +41,7 @@
 //	.Data - optional arbitrary data set by a JSON in ./README.md.data
 //	.Library - true if not a command
 //	.Command - true if package main
-//	.Notes - a map of names to Note (see below) entries
+//	.Notes - a list of Note (see below) entries
 //	.Examples - a map of names to Example (see below) entries
 //	.ExternalExamples - like Examples but for examples from package X_test
 //
@@ -69,10 +69,14 @@
 //	.Output - the expected output, if specified
 //	.Playable - if the example is self-contained
 //
-// Note entries collect the "MARKER(uid): body" notes from the package (per go/doc)
+// Note entries collect the "KIND(uid): body" notes from the package (per go/doc)
 //
+//	.Kind - the kind of note
 //	.UID - the name associated with this name
 //	.Body - the text of the note
+//
+// The list of notes has two methods, Kind and UID, which take a string
+// and return a list of notes matching the respective Kind/UID.
 //
 // # Repository Configuration
 //

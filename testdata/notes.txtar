@@ -1,6 +1,6 @@
 -- .github/autoreadme/README.md.template --
-{{ range $kind, $notes := .Package.Notes -}}
-	{{- $kind }}{{ range $notes }}({{ .UID }}): {{ .Body }}{{ end }}
+{{ range .Package.Notes.Kind "BUG" -}}
+	{{- .Kind }}({{ .UID }}): {{ .Body }}
 {{- end -}}
 -- go.mod --
 module example
@@ -8,5 +8,8 @@ module example
 package example
 
 // BUG(tst): ough
+// IGNORE(me): not here
+// BUG(abc): first
 -- README.md.expect --
+BUG(abc): first
 BUG(tst): ough
