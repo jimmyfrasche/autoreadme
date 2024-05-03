@@ -84,10 +84,7 @@ func PackageFromInfo(fset *token.FileSet, p *info) *Package {
 		Name = file
 	}
 
-	Doc := &Doc{
-		Synopsis: Synopsis(p.doc.Doc),
-		Doc:      ParseDoc(p.doc.Doc),
-	}
+	Doc := NewDoc(p.doc.Doc)
 
 	var Notes Notes
 	for k, ns := range p.doc.Notes {

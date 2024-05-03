@@ -48,20 +48,13 @@ func ModInfo(projectRoot string) (*Module, error) {
 	comments := f.Module.Syntax.Comments.Before
 	text := stripDeprecation(flattenModComments(comments))
 
-	Documentation := ParseDoc(text)
-
-	Synopsis := Synopsis(text)
-
 	return &Module{
-		Path:       Path,
-		Version:    Version,
-		Deprecated: Deprecated,
-		GoVersion:  GoVersion,
-		Toolchain:  Toolchain,
-		Documentation: &Doc{
-			Synopsis: Synopsis,
-			Doc:      Documentation,
-		},
+		Path:          Path,
+		Version:       Version,
+		Deprecated:    Deprecated,
+		GoVersion:     GoVersion,
+		Toolchain:     Toolchain,
+		Documentation: NewDoc(text),
 	}, nil
 }
 

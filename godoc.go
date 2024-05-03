@@ -24,6 +24,13 @@ type Doc struct {
 	*comment.Doc
 }
 
+func NewDoc(text string) *Doc {
+	return &Doc{
+		Synopsis: Synopsis(text),
+		Doc:      ParseDoc(text),
+	}
+}
+
 func epsilon(*comment.Heading) string {
 	return ""
 }
