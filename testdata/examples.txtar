@@ -1,0 +1,31 @@
+-- README.md.template --
+{{ with .Package.Examples.Named "A" }}{{ .Doc.Markdown 2 }}{{ end }}
+{{ range .Package.Examples.Matching "B_[12]" }}
+	{{- .Name }}
+{{ end -}}
+-- go.mod --
+module example
+-- x.go --
+package x
+-- x_test.go --
+package x
+
+// ExampleA is a great example.
+//
+// # facts
+//
+// it's so good.
+func ExampleA() {}
+
+func ExampleB_1() {}
+
+func ExampleB_2() {}
+-- README.md.expect --
+ExampleA is a great example.
+
+## facts
+
+it's so good.
+
+B_1
+B_2

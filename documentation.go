@@ -42,7 +42,7 @@
 //	.Library - true if not a command
 //	.Command - true if package main
 //	.Notes - a list of Note (see below) entries
-//	.Examples - a map of names to Example (see below) entries
+//	.Examples - a list of Example (see below) entries
 //	.ExternalExamples - like Examples but for examples from package X_test
 //
 // Name is the package name for libraries. However, for commands that is always "main"
@@ -72,6 +72,11 @@
 //	.Playable - if the example is self-contained
 //	.Unordered - if the output is unordered
 //	.EmptyOutput - if the expected result is no output
+//
+// and the lists of examples have a few methods
+//  1. Playable - returns a list where Playable is true
+//  2. Named name - returns the single Example with that exact name or halts execution if there is none
+//  3. Matching pattern - returns all examples whose name matches the RE2 regexp pattern
 //
 // Note entries collect the "KIND(uid): body" notes from the package (per go/doc)
 //

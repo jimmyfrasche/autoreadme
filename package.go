@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"cmp"
+	"fmt"
 	"go/doc"
 	"go/token"
 	"path/filepath"
@@ -19,8 +20,8 @@ type Package struct {
 	Library          bool
 	Command          bool
 	Notes            Notes
-	Examples         map[string]Example
-	ExternalExamples map[string]Example
+	Examples         Examples
+	ExternalExamples Examples
 }
 
 type Note struct {
@@ -62,15 +63,47 @@ type Example struct {
 	EmptyOutput bool
 }
 
-func examplesFrom(buf *bytes.Buffer, fset *token.FileSet, in []*doc.Example) map[string]Example {
-	if len(in) == 0 {
-		return nil
+type Examples []Example
+
+func (es Examples) Playable() Examples {
+	var out Examples
+	for _, e := range es {
+		if e.Playable {
+			out = append(out, e)
+		}
 	}
-	m := make(map[string]Example, len(in))
+	return out
+}
+
+func (es Examples) Named(name string) (Example, error) {
+	for _, e := range es {
+		if e.Name == name {
+			return e, nil
+		}
+	}
+	return Example{}, fmt.Errorf("no example named %q found", name)
+}
+
+func (es Examples) Matching(pattern string) (Examples, error) {
+	re, err := regexp.Compile(pattern)
+	if err != nil {
+		return nil, err
+	}
+	var out Examples
+	for _, e := range es {
+		if re.MatchString(e.Name) {
+			out = append(out, e)
+		}
+	}
+	return out, nil
+}
+
+func examplesFrom(buf *bytes.Buffer, fset *token.FileSet, in []*doc.Example) Examples {
+	var acc Examples
 	for _, ex := range in {
-		m[ex.Name] = renderExample(buf, fset, ex)
+		acc = append(acc, renderExample(buf, fset, ex))
 	}
-	return m
+	return acc
 }
 
 var versionRE = regexp.MustCompile("^v[0-9]+$")

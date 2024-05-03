@@ -28,20 +28,20 @@ PACKAGE
 -LIBRARY
 {{ if .Package.Library }}yes{{ else }}no{{ end }}
 -EXAMPLE
-{{ range $n, $x := .Package.Examples -}}
-{{ $n }}
+{{ range .Package.Examples -}}
+{{ .Name }}
 code
-{{ $x.Code }}
+{{ .Code }}
 output
-{{ $x.Output }}
+{{ .Output }}
 {{- end }}
 -EXTERNAL EXAMPLE
-{{ range $n, $x := .Package.ExternalExamples -}}
-{{ $n }}
+{{ range .Package.ExternalExamples -}}
+{{ .Name }}
 code
-{{ $x.Code }}
+{{ .Code }}
 output
-{{ $x.Output }}
+{{ .Output }}
 {{- end }}
 -DOCUMENTATION
 {{ .Package.Documentation.Synopsis }}
