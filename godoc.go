@@ -7,6 +7,7 @@ import (
 	"go/doc/comment"
 	"go/format"
 	"go/token"
+	"strings"
 )
 
 func Synopsis(text string) string {
@@ -20,12 +21,14 @@ func ParseDoc(text string) *comment.Doc {
 }
 
 type Doc struct {
+	Empty    bool
 	Synopsis string
 	*comment.Doc
 }
 
 func NewDoc(text string) *Doc {
 	return &Doc{
+		Empty:    strings.TrimSpace(strings.ReplaceAll(text, "\n", "")) == "",
 		Synopsis: Synopsis(text),
 		Doc:      ParseDoc(text),
 	}

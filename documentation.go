@@ -52,6 +52,7 @@
 //
 //	.Synopsis - The first sentence as plain text
 //	.Doc - the raw go/doc/comment/Doc
+//	.Empty - false if there is documentation
 //
 // additionally Documentation has a
 //
