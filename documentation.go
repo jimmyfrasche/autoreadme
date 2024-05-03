@@ -66,7 +66,7 @@
 // Example entries contain
 //
 //	.Name - func Name without Example prefix
-//	.Doc - Doc entry for the example func
+//	.Documentation - Doc entry for the example func
 //	.Code - markdown formatted code
 //	.Output - the expected output, if specified
 //	.Playable - if the example is self-contained

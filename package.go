@@ -54,13 +54,13 @@ func (ns Notes) UID(uid string) Notes {
 }
 
 type Example struct {
-	Name        string
-	Doc         *Doc
-	Code        string
-	Output      string
-	Playable    bool
-	Unordered   bool
-	EmptyOutput bool
+	Name          string
+	Documentation *Doc
+	Code          string
+	Output        string
+	Playable      bool
+	Unordered     bool
+	EmptyOutput   bool
 }
 
 type Examples []Example

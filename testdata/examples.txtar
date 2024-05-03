@@ -1,5 +1,5 @@
 -- README.md.template --
-{{ with .Package.Examples.Named "A" }}{{ .Doc.Markdown 2 }}{{ end }}
+{{ with .Package.Examples.Named "A" }}{{ .Documentation.Markdown 2 }}{{ end }}
 {{ range .Package.Examples.Matching "B_[12]" }}
 	{{- .Name }}
 {{ end -}}
