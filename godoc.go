@@ -11,12 +11,21 @@ import (
 )
 
 func Synopsis(text string) string {
+	d := ParseDoc(text)
+	text = string(newPrinter(1).Text(d))
 	var p doc.Package
 	return p.Synopsis(text)
 }
 
 func ParseDoc(text string) *comment.Doc {
-	var p comment.Parser
+	p := &comment.Parser{
+		LookupPackage: func(string) (string, bool) {
+			return "", true
+		},
+		LookupSym: func(string, string) bool {
+			return true
+		},
+	}
 	return p.Parse(text)
 }
 
@@ -38,11 +47,20 @@ func epsilon(*comment.Heading) string {
 	return ""
 }
 
-func (d *Doc) Markdown(headingLevel int) string {
-	p := &comment.Printer{
+func noLink(*comment.DocLink) string {
+	return ""
+}
+
+func newPrinter(headingLevel int) *comment.Printer {
+	return &comment.Printer{
 		HeadingLevel: headingLevel,
 		HeadingID:    epsilon,
+		DocLinkURL:   noLink,
 	}
+}
+
+func (d *Doc) Markdown(headingLevel int) string {
+	p := newPrinter(headingLevel)
 	return string(p.Markdown(d.Doc))
 }
 
